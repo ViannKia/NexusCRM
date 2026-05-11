@@ -27,7 +27,7 @@ export default async function PipelinePage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold md:text-3xl">Sales Pipeline</h1>
-      <KanbanBoard stages={stages} deals={deals} />
+      <KanbanBoard stages={stages} deals={deals as any} />
     </div>
   );
 }

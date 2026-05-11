@@ -24,7 +24,10 @@ export default async function ActivitiesPage({ searchParams }: ActivitiesPagePro
 
   // Apply type filter
   if (typeFilter && typeFilter !== 'all') {
-    queryBuilder = queryBuilder.eq('type', typeFilter);
+    const validTypes = ['call', 'email', 'meeting', 'task'] as const;
+    if (validTypes.includes(typeFilter as any)) {
+      queryBuilder = queryBuilder.eq('type', typeFilter as 'call' | 'email' | 'meeting' | 'task');
+    }
   }
 
   const { data: activities, error } = await queryBuilder
@@ -49,7 +52,7 @@ export default async function ActivitiesPage({ searchParams }: ActivitiesPagePro
           Failed to load activities: {error.message}
         </div>
       ) : (
-        <ActivityList activities={activities || []} />
+        <ActivityList activities={activities as any || []} />
       )}
     </div>
   );
