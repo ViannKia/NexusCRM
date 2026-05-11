@@ -34,7 +34,7 @@ export async function createActivity(
         contact_id: validated.contact_id,
         deal_id: validated.deal_id,
         created_by: user.id,
-      })
+      } as any)
       .select()
       .single();
 
@@ -66,10 +66,7 @@ export async function completeActivity(id: string): Promise<ActionResponse> {
       redirect('/login');
     }
 
-    const { error } = await supabase
-      .from('activities')
-      .update({ completed_at: new Date().toISOString() })
-      .eq('id', id);
+    const { error } = await (supabase.from('activities') as any).update({ completed_at: new Date().toISOString() }).eq('id', id);
 
     if (error) {
       console.error('Complete activity error:', error);
