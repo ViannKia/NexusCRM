@@ -24,17 +24,18 @@ export async function createActivity(
       redirect('/login');
     }
 
-    const { data: activity, error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: activity, error } = await (supabase as any)
       .from('activities')
       .insert({
         type: validated.type,
         subject: validated.subject,
-        description: validated.description,
+        description: validated.description ?? null,
         due_date: validated.due_date,
         contact_id: validated.contact_id,
-        deal_id: validated.deal_id,
+        deal_id: validated.deal_id ?? null,
         created_by: user.id,
-      } as any)
+      })
       .select()
       .single();
 
@@ -45,7 +46,7 @@ export async function createActivity(
 
     revalidatePath('/activities');
 
-    return { success: true, data: activity };
+    return { success: true, data: activity as Activity };
   } catch (error) {
     console.error('Create activity error:', error);
     return { success: false, error: 'Invalid input data. Please check your entries.' };
@@ -66,7 +67,11 @@ export async function completeActivity(id: string): Promise<ActionResponse> {
       redirect('/login');
     }
 
-    const { error } = await (supabase.from('activities') as any).update({ completed_at: new Date().toISOString() }).eq('id', id);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase as any)
+      .from('activities')
+      .update({ completed_at: new Date().toISOString() })
+      .eq('id', id);
 
     if (error) {
       console.error('Complete activity error:', error);
